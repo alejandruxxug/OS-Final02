@@ -80,7 +80,7 @@ EOF
   aws iam create-policy \
     --policy-name "$POLICY_NAME" \
     --policy-document "$POLICY_DOC" \
-    --description "Punto 2 OS Final 2026-1 — acceso S3 desde EC2." >/dev/null
+    --description "Punto 2 OS Final 2026-1 - acceso S3 desde EC2." >/dev/null
   ok "Policy creada"
 fi
 
@@ -103,7 +103,7 @@ EOF
   aws iam create-role \
     --role-name "$ROLE_NAME" \
     --assume-role-policy-document "$TRUST" \
-    --description "Punto 2 OS Final 2026-1 — rol EC2 → S3." >/dev/null
+    --description "Punto 2 OS Final 2026-1 - rol EC2 a S3." >/dev/null
   ok "Role creado con trust ec2.amazonaws.com"
 fi
 
