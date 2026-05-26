@@ -274,14 +274,41 @@ RestartSec=3
 WantedBy=multi-user.target
 ```
 
-Instalación en la instancia:
+Instalación paso a paso en la instancia EC2 (continuación del sub-ítem **g**):
 
 ```bash
-# (Editar primero el placeholder S3_BUCKET en el archivo)
-sudo cp fastapi-s3.service /etc/systemd/system/
+# 1. Editar el placeholder del bucket dentro del unit
+sed -i 's|<REEMPLAZAR-CON-NOMBRE-DEL-BUCKET>|<tu-bucket>|' \
+    /home/ec2-user/app/fastapi-s3.service
+
+# 2. Copiar al directorio de systemd
+sudo cp /home/ec2-user/app/fastapi-s3.service /etc/systemd/system/
+
+# 3. Recargar systemd para que detecte el nuevo unit
 sudo systemctl daemon-reload
+
+# 4. Habilitar (arranque automático en boot) y arrancar inmediatamente
 sudo systemctl enable --now fastapi-s3
+
+# 5. Verificar estado (debe decir "active (running)")
 sudo systemctl status fastapi-s3
+
+# 6. Ver los logs de uvicorn arrancando
+sudo journalctl -u fastapi-s3 -n 50 --no-pager
+```
+
+Comandos útiles para depurar (no requeridos por el enunciado, pero documentados por si la captura **10** muestra `failed`):
+
+```bash
+# Reiniciar después de cambios al .service o al código
+sudo systemctl daemon-reload && sudo systemctl restart fastapi-s3
+
+# Seguir logs en vivo
+sudo journalctl -u fastapi-s3 -f
+
+# Detener (al terminar la sesión de evidencias para no gastar créditos)
+sudo systemctl stop fastapi-s3
+sudo systemctl disable fastapi-s3
 ```
 
 ![systemctl status fastapi-s3 — active (running)](screenshots/10-systemd-service-active.png)
