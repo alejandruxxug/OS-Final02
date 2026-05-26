@@ -56,6 +56,7 @@ Aplicación FastAPI que expone dos endpoints (uno `POST` para subir imágenes PN
 | `app/__init__.py` | Marker de paquete (vacío). |
 | `requirements.txt` | Dependencias: `fastapi`, `uvicorn[standard]`, `boto3`, `python-multipart`. |
 | `fastapi-s3.service` | Unit file de **systemd** para ejecutar la app como servicio en EC2 (sub-ítem **h**). |
+| `guide.md` | Guía paso a paso de despliegue (local + AWS), pensada para reproducir el ejercicio de cero. |
 | `README.md` | Este documento (resumen para calificación). |
 | `PROMPTS.md` | Transcripción del chat con Claude Code (evidencia de IA). |
 | `screenshots/` | Capturas de pantalla (13 archivos, ver índice al final). |

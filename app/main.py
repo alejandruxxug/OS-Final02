@@ -14,7 +14,7 @@ from botocore.exceptions import ClientError
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 
-S3_BUCKET: Final[str] = os.environ.get("S3_BUCKET", "")
+S3_BUCKET: Final[str] = os.environ.get("S3_BUCKET", "os-final-02")
 AWS_REGION: Final[str] = os.environ.get("AWS_REGION", "us-east-1")
 
 ALLOWED_EXTENSIONS: Final[set[str]] = {".png", ".jpg", ".jpeg"}
