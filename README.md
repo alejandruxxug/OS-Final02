@@ -129,7 +129,6 @@ def get_image(username: str, image_name: str):
     ...
 ```
 
-![GET endpoint en el editor](screenshots/04-get-endpoint-code.png)
 
 ### e. Verificación de existencia, presigned URL y fecha desde metadatos
 
@@ -153,11 +152,9 @@ Ejemplo de respuesta:
 }
 ```
 
-![GET exitoso devolviendo presigned URL + stored_at](screenshots/05-get-presigned-url-response.png)
 
 Caso de error con mensaje claro (la imagen no existe):
 
-![GET de imagen inexistente devolviendo 404 con mensaje](screenshots/06-get-not-found-error.png)
 
 ### f. Validación local con Swagger (sin curl)
 
@@ -175,7 +172,6 @@ Y se abre `http://127.0.0.1:8000/docs` en el navegador. Se prueba el `POST /uplo
 
 > Las credenciales locales de boto3 vienen de `~/.aws/credentials`. En la instancia EC2, vendrán del **rol IAM** asociado a la instancia, sin necesidad de configuración adicional.
 
-![Swagger local — POST exitoso 201](screenshots/07-swagger-local-post-success.png)
 
 ### g. Despliegue en EC2 con acceso público
 
@@ -202,6 +198,9 @@ Y se abre `http://127.0.0.1:8000/docs` en el navegador. Se prueba el `POST /uplo
    - Security Group con dos reglas inbound:
      - TCP **22** desde *My IP* (SSH).
      - TCP **8000** desde `0.0.0.0/0` (Swagger público).
+
+## Al final no me funcionaba localmente enotnces seguí con el deployment :D
+
 
 ![Instancia EC2 *running* con IP pública](screenshots/08-ec2-instance-running.png)
 ![Security Group con regla inbound :8000](screenshots/09-security-group-port-8000.png)

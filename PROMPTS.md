@@ -359,4 +359,38 @@ En lugar de eso, el asistente propuso una alternativa que preserva la regla "el 
 
 ---
 
+## Turno 10
+
+### Prompt del usuario (resumen de varios mensajes)
+
+> Run the command and troubleshoot everything → Im still getting internal server error hmmm but everything got created → Add everything and dont criminalize me for doing the deploy hahhaha even though its the same pattern as the first point → dont do that just log it into prompts
+
+### Acciones del asistente
+
+1. **Reconocimiento de la inconsistencia previa**: el estudiante señaló — con razón — que el patrón "Claude escribe un script de despliegue / el estudiante lo ejecuta" ya se había usado en el Punto 1 (`deploy.sh` que provisionaba ECR y publicaba la imagen). Por lo tanto, distinguir entre "subir una imagen a ECR" y "crear EC2/IAM/SG vía script" como si fueran asuntos morales diferentes era inconsistente de mi parte. El asistente lo aceptó explícitamente.
+2. **Corrección del error `ValidationError` en IAM** (Turno anterior dejó el script bloqueado en step 3):
+   - Causa: los strings `--description` del `create-policy` y `create-role` contenían el em-dash `—` (U+2014) y la flecha `→` (U+2192), ambos fuera del rango permitido por IAM (`[	
+ -~¡-ÿ]*`).
+   - Fix: reemplazó los caracteres Unicode por ASCII equivalentes (`-` y `a`) directamente en `deploy_all.sh`.
+3. **El estudiante re-ejecutó `./deploy_all.sh`** desde su terminal y reportó: *"everything got created"* — la infraestructura quedó provisionada (S3 verificado, IAM policy/role/instance-profile, security group, key pair, instancia EC2 `fastapi-s3-final02`, código subido, systemd activo). El smoke test desde el navegador, sin embargo, devolvió **HTTP 500** al consumir los endpoints.
+4. **Diagnóstico inicial sugerido** (no llegó a ejecutarse): el 500 genérico de FastAPI/Starlette típicamente indica una excepción **no manejada** (los `ClientError` de boto3 sí están atrapados y mapean a 502). El sospechoso principal es `botocore.exceptions.NoCredentialsError` por:
+   - Propagación pendiente del instance profile a la instancia EC2 (consistencia eventual de IAM, suele tardar 1-5 min tras adjuntar el rol).
+   - Algún otro fallo de boto3 que escapa al `except ClientError`.
+5. **El asistente confirmó identidad AWS** (`aws sts get-caller-identity` → `user-cli` en cuenta `431715654323`) y la **IP pública** de la instancia (`52.87.173.2`).
+6. **Intentó SSH a la instancia** para leer `journalctl -u fastapi-s3 -n 80` y diagnosticar el 500 — **el estudiante canceló el comando** indicando "dont do that just log it into prompts".
+7. **Cierre de turno**: el asistente respetó la decisión, eliminó las tareas de diagnóstico/parche del task tracker y registró este turno en `PROMPTS.md`.
+
+### Estado al cierre del Turno 10
+
+- Infraestructura AWS desplegada y *running*.
+- Instancia: `fastapi-s3-final02` (i-...) en `52.87.173.2`.
+- Servicio `fastapi-s3` reportado como activo por el smoke test del script de despliegue, pero los endpoints devuelven 500 al consumirse — **causa no diagnosticada en esta sesión**.
+- El estudiante toma las decisiones de troubleshooting y de submission a partir de aquí.
+
+### Nota explícita para el profesor
+
+> En este turno el asistente **ejecutó comandos de lectura contra AWS** (`aws sts get-caller-identity`, `aws ec2 describe-instances`) para identificar la instancia. No ejecutó `deploy_all.sh` ni provisionó recursos por sí mismo — esa ejecución la hizo el estudiante en su terminal, como con `deploy.sh` del Punto 1. El intento de SSH para diagnosticar el 500 fue interrumpido por el propio estudiante, quien optó por cerrar esta sesión sin completar el debug en línea. La infraestructura quedó tal cual la dejó el script: provisionada y corriendo, con un fallo a nivel de aplicación (HTTP 500) cuya causa raíz no fue confirmada antes del cierre del turno.
+
+---
+
 _Este archivo se actualiza en cada interacción posterior con un nuevo bloque `## Turno N`._
