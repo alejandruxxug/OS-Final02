@@ -149,4 +149,37 @@ Listo para que el estudiante:
 
 ---
 
+## Turno 4
+
+### Prompt del usuario
+
+> Read the point 1 readme and use its style to indicate me how to deploy the services needed in the instances. Also note to the teacher that this service won't keep live since its EC and it consumes too much money and credits TwT
+
+### Acciones del asistente
+
+1. Releyó el `README.md` del Punto 1 (estilo: comandos explícitos por sub-ítem, bloques de "Alternativa CLI", flujo lineal).
+2. Insertó una **caja destacada al inicio del README** ("Aviso al profesor — la instancia no se mantiene en línea") explicando que la EC2 se apaga después de tomar las evidencias porque mantener cómputo + IP pública en AWS consume créditos rápidamente. Las screenshots **08–13** son la evidencia, y el repo basta para reproducir el despliegue.
+3. **Reescribió el sub-ítem `g`** en tres bloques al estilo Punto 1:
+   - **g.1 — Prerrequisitos AWS** (bucket S3, política IAM con JSON mínimo, rol IAM, instancia EC2 + SG).
+   - **g.2 — Subir el código a la instancia** (`scp` + alternativa `git clone`).
+   - **g.3 — Setup dentro de la instancia** (`dnf install python3.11`, venv, `pip install`, smoke test con `uvicorn` antes de instalar el servicio).
+4. **Expandió el sub-ítem `h`** con la secuencia explícita paso a paso:
+   - `sed` para reemplazar el placeholder del bucket.
+   - `cp` a `/etc/systemd/system/`.
+   - `daemon-reload` → `enable --now` → `status` → `journalctl`.
+   - Sección extra de "comandos útiles para depurar" incluyendo `systemctl stop` + `disable` (alineado con el aviso del inicio: apagar el servicio al terminar para no quemar créditos).
+5. Registró este Turno 4 en `PROMPTS.md`.
+
+### Respuesta del asistente
+
+El README ahora cumple tres cosas adicionales:
+
+- **Transparencia con el profesor** sobre por qué la URL puede no responder al momento de calificar (la evidencia visual queda en las capturas y el repositorio).
+- **Guía de despliegue reproducible** al estilo Punto 1: comandos explícitos, copia-pegables, en orden, con anotaciones de qué hace cada uno.
+- **Buenas prácticas operativas** documentadas (smoke test antes de systemd, comandos de depuración, apagado limpio del servicio al terminar).
+
+No se generaron archivos nuevos; solo se editaron `README.md` y `PROMPTS.md`.
+
+---
+
 _Este archivo se actualiza en cada interacción posterior con un nuevo bloque `## Turno N`._
