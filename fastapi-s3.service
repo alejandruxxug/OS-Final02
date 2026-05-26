@@ -1,0 +1,17 @@
+[Unit]
+Description=FastAPI S3 image service (Punto 2 OS Final 2026-1)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ec2-user
+WorkingDirectory=/home/ec2-user/app
+Environment="S3_BUCKET=<REEMPLAZAR-CON-NOMBRE-DEL-BUCKET>"
+Environment="AWS_REGION=us-east-1"
+ExecStart=/home/ec2-user/app/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
